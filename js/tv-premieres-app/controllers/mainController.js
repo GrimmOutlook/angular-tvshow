@@ -2,6 +2,7 @@ app.controller("mainController", function($scope, $http){
 
     $scope.apiKey = "<My API Key>";
     $scope.results = [];
+    $scope.filterText = null;
     $scope.init = function() {
         //API requires a start date
         var today = new Date();
