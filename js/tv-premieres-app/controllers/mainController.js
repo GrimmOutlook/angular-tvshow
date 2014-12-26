@@ -1,8 +1,10 @@
 app.controller("mainController", function($scope, $http){
 
-    $scope.apiKey = "<My API Key>";
+    $scope.apiKey = "37dcd9e43229c7bbc98a0c8bd75a6e57";
     $scope.results = [];
     $scope.filterText = null;
+    $scope.availableGenres = [];
+    $scope.genreFilter = null;
     $scope.init = function() {
         //API requires a start date
         var today = new Date();
@@ -13,14 +15,27 @@ app.controller("mainController", function($scope, $http){
             //For each day, get all the episodes
             angular.forEach(data, function(value, index){
             //The API stores the full date separately from each episode. Save it so we can use it later
-                var date = value.date;
+            var date = value.date;
                 //For each episodes, add it to the results array
-                    angular.forEach(value.episodes, function(tvshow, index){
-                      //Create a date string from the timestamp so we can filter on it based on user text input
-                        tvshow.date = date;
+                angular.forEach(value.episodes, function(tvshow, index){
+                    //Create a date string from the timestamp so we can filter on it based on user text input
+                    tvshow.date = date;
                         //Attach the full date to each episode
-                          $scope.results.push(tvshow);
-                    });
+                        $scope.results.push(tvshow);
+                            //Loop through each genre for this episode
+                            angular.forEach(tvshow.show.genres, function(genre, index){
+                                //Only add to the availableGenres array if it doesn't already exist
+                                var exists = false;
+                                angular.forEach($scope.availableGenres, function(avGenre, index){
+                                if (avGenre == genre) {
+                                    exists = true;
+                                }
+                            });
+                            if (exists === false) {
+                                $scope.availableGenres.push(genre);
+                            }
+                        });
+                });
             });
         }).error(function(error) {
 
